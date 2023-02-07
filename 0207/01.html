@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@3"></script>
+    <title>Document1</title>
+    <style>
+        #app {
+            border: 2px solid red;
+            display: flex;
+        }
+        .text {
+            width: 150px;
+            height: 150px;
+            border: 2px solid black;
+            margin: 10px;
+        } 
+        .on {
+            border-color: red;
+            visibility: visible;
+        }
+        .red {border-color: red;}
+        .blue {border-color: blue;}
+        .green {border-color: green;}
+    </style>
+</head>
+<body>
+    <div id="app">
+        <p :class="['text', {red: text1}]"  @click="clickedText('red')">첫번째 글입니다.</p>
+        <p :class="['text', {blue: text2}]"  @click="clickedText('blue')">두번째 글입니다.</p>
+        <p :class="['text', {green: text3}]"  @click="clickedText( 'green')">세번째 글입니다.</p>
+    </div>
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    text1: false,
+                    text2: false,
+                    text3: false,
+                }
+            },
+            computed: {
+                text1CSS() {return {red:this.text1}},
+                text2CSS() {return {red:this.text2}},
+                text3CSS() {return {red:this.text3}},
+
+            },
+            methods: {
+                clickedText(color) {
+                    console.log(color)
+                    if (color === 'red') 
+                    this.text1 = !this.text1;
+                    if (color === 'blue') 
+                    this.text2 = !this.text2;
+                    if (color === 'green') 
+                    this.text3 = !this.text3;
+                    }
+                }
+        }).mount('#app');
+    </script>
+</body>
+</html>

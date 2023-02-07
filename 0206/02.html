@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>실습</title>
+    <script src="https://unpkg.com/vue@3"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>{{ myName }}</h1>
+        <p>{{ myAge }}</p>
+        <p>{{ calculateAge() }}</p>
+        <p>오늘의 숫자는: {{ getRandom }}</p>
+        <div>
+        <img v-bind:src="myUrl" />
+        </div>
+        <input type="text" v-bind:value="myName" />
+    </div>
+<script> const instance = Vue.createAPP({
+    data() {
+        return {
+        myName: '안가연',
+        myAge: 23,
+        myUrl: "https://dullyshin.github.io/2018/08/30/HTML-imgLink/#lg=1&slide=0",
+    }
+},
+    methods: {
+        calculateAge() {
+        return this.myAge + 5
+    }
+},
+    computed: {
+        getRandom() {
+        return Math.random()
+        }
+    },
+})
+    instance.mount('#app')
+    </script>
+</body>
+</html>
+

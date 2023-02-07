@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>실습</title>
+    <script src="https://unpkg.com/vue@3"></script>
+</head>
+<body>
+<div id="app">
+    <h1>뷰 이벤트</h1>
+    <h2>이벤트로 할일</h2>
+    <button v-on:click="increase(4)">더하기</button>
+    <button v-on:click="decrease(4)">빼기</button>
+    <p>결과: {{ counter }}</p>
+    <input type="text" v-model="myName" />
+    <p>{{ showName }}</p>
+  </div>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          counter: 10,
+          myName: '',
+        };
+      },
+      computed: {
+        showName() {
+          console.log('실행됐음!');
+          if (this.myName === '') 
+            return '';
+          return '안' + this.myName;
+        },
+    },
+        watch: {
+            myName(newData, oldData) {
+                if (newData === '가연') {
+                    console.log('ok')
+                } 
+            }
+        },
+      methods: {
+        setName(event) {
+          this.myName = event.target.value;
+        },
+        increase(num) {
+          this.counter += num;
+        },
+        decrease(num) {
+          this.counter -= num;
+        },
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@3"></script></head>
+<body>
+    <div id = "app">
+        <input type="text" v-on:input="add" />
+        <button @:click="decrease($event, 10)">감소</button> 
+        <button @:click.once="(event) => {increase(10, event)}">증가</button>
+        <div @:click="increase(20)">
+        <p @:click = some>결과: {{ number }} </p>
+        </div>
+        <input type = "text" v-on:keyup.enter="setName($event)" />
+        <p>{{ myNum }}</p>
+    </div>
+    <script>
+    Vue.createApp({
+        data() {
+            return{
+                number: 100,
+                myNum: 13,
+                myName: ''
+            }
+        },
+        methods: {
+            setName(ev) {
+                this.myName = ev.target.value;
+            },
+            some() {
+                console.log('some')
+            },
+            decrease(ev, num) {
+                this.number-= num;
+            },
+            increase(num, ev) {
+                this.number+= num;
+            },
+        }
+}).mount('#app')
+    </script>
+</body>
+</html>
