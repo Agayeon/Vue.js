@@ -9,11 +9,11 @@
   <link rel="stylesheet" href="./css/movie1.css">
 </head>
 <body>
-  <div class="movie" id="app"> 
-    <ul class="tab">
+  <div class="movie" id="app">
+    <ul class="tab" ref="tab" @Click.prevent="setContext">
       <li><a href="">예매순</a></li>
       <li><a href="">평점순</a></li>
-      <li><a href="on"><a href="">개봉일순</a></li>
+      <li><a href="">개봉일순</a></li>
       <li><a href="">주말관객순</a></li>
       <li><a href="">다운로드순</a></li>
     </ul>
@@ -26,32 +26,27 @@
             <!-- 배열은 0부터 시작이기 때문에 1위를 1로 하기 위해서 -->
             <img class="poster" :src="movie.src" :alt="movie.name"/>
             <!---평점순--->
-            <span class="desc">
+            <span class="desc" v-if="movContext ==='평점순'">
                 <i class="star"><b :style=" 'width:'+ (movie.score *10) +'%' "></b></i>
                 <em class="score">{{movie.score}}</em>
             </span>
             <!---예매순--->
-            <span class="desc">
+            <span class="desc" v-else-if="movContext==='예매순'">
               <i class="reeserv title">예매율</i>
               <em class="reserv data">9292827</em>
             </span>
             <!--개봉일순--->
-            <span class="desc">
+            <span class="desc" v-else-if="movContext==='개봉일순'">
               <em class="open data"> 9.11 <b>개봉</b></em>
             </span>
             <!---주말관객순--->
-            <span class="desc">
+            <span class="desc" v-if="movContext==='주말관객순'">
               <i class="week title">주말관객</i>
               <em class="week data">239282</em>
             </span>
-            <!---다운로드순--->
-            <span class="desc">
-              <i class="week title">주말관객</i>
-              <em class="week data">239282 명</em>           
-             </span>
              <!---판매율순--->
-             <span class="desc">
-              <i class="sale title">판매율</i>
+             <span class="desc" v-else-if="movContext==='다운로드순'">
+              <i class="sale title">다운로드</i>
               <em class="sale data">23 %</em>
             </span>
           </a>
@@ -67,6 +62,14 @@
     Vue.createApp({
       data() {
         return {
+          movContext: '예매순',
+          menuMatch: {
+            예매순: 'ticketing',
+            평점순: 'score',
+            개봉일순: 'openDate',
+            주말관객순: 'week',
+            다운로드순: 'sale',
+          },
         rateMatch: {
       '0': '전체관람가',
       '12': '12세이상 관람가',
@@ -157,15 +160,43 @@
           ]
         }
       },
-    created() {
-      //rate 데이터 손보기
-      for (const movie of this.movies) {
-        movie.rate=[movie.rate, this.rateMatch[movie.rate]]
+      watch: {
+        movContext(crr) {
+          this.setOrder(this.menuMatch[crr]);
+          this.setCrrTab(crr);
+        }
+      },
+      methods: {
+        setOrder(cxt) { // 소팅
+          this.movies.sort((a, b) => b[cxt] - a[cxt])
+        },
+        setContext(ev) { // 상태바꾸기
+          if (ev.target.tagName !== 'A') return;
+          this.movContext = ev.target.textContent;
+        },
+      setCrrTab(crr) {
+          // on 지우기
+          this.$refs.tab.querySelectorAll('li').forEach(item => {
+            item.classList.remove('on');
+          })
+          //lielem에 on 주기
+          this.$refs.tab.querySelectorAll('a').forEach(item => {
+            if (item.textContent === crr) {
+              item.parentNode.classList.add('on');
+            }
+          })
+        }
+      },
+      mounted() {
+        // 시작시 탭에 on주기
+        this.setCrrTab(this.movContext)
+        // rate 데이터 손보기
+        for (const movie of this.movies) {
+          movie.rate = [movie.rate, this.rateMatch[movie.rate]]
+        }
+        // 시작시 소팅
+        this.setOrder(this.movContext)
       }
-      //score 순으로 소팅
-      this.movies.sort( (a,b) => b.score -a.score)
-      console.log(this.movies)
-    }
   }).mount('#app')
   </script>
 </body>
