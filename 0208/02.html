@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@3"></script>    
+    <title>Vue컴포넌트</title>
+    <style>
+        * {margin:0; padding:0}
+        li {list-style: none;}
+        body {padding:30px;}
+        .list {margin:20px 0; display: flex;}
+        .list > li {margin: 5px; width:200px; border:1px solid gray; padding:10px;}
+        .list > li > * {display:block}
+        .list > li > img {width:200px; margin-bottom:20px;}
+        .list > li > strong {font-size:20px; color:#666; margin-bottom:10px}
+        .list > li > span{margin-bottom:10px;}
+    </style>
+</head>
+<body>
+<div id="app">
+    <h1>Sales Product ({{ inCart.length }}) - {{ totalPrice }}원)</h1>
+    <h3>구입목록</h3>
+    <ul>
+        <li v-for="(item, i) in inCart" :key="item.title">
+            <strong>{{ item.title }}</strong>
+            <span>{{ item.price }}</span>
+            <a href="" @click.prevent="delCart(i)">삭제</a>
+        </li>
+    </ul>
+    <product-list
+      :chips-data="chips"
+      like="10"
+      @add-item="addCart">
+    </product-list> <!-- 옷장. 여길 통해서 데이터를 주고받기 가능 -->
+</div>
+<script>
+    // 지역 컴포넌트 //
+    const productList = {
+            template: `
+        <ul class="list">
+          <li v-for="(item, i) in chipsData" :key="item.title">
+            <img :src="item.img" />
+            <strong>{{ item.title }}</strong>
+            <span>{{ item.desc }}</span>
+            <b>{{ item.price }}</b>
+            <button @click="add(i)">구입하기</button>
+          </li>
+        </ul>
+      `,
+      data() {
+        return {
+        }  
+      },
+      props: ['chipsData', 'like'], //-를 사용할 수 없기 때문에 대문자D로 작성
+      methods: {
+        add(index) {
+            this.$emit('add-item', index)
+        }
+      } 
+    }
+    const app = Vue.createApp({
+        data() {
+            return {
+                totalPrice: 0,
+                inCart: [],
+                chips: [{
+                    img: `images/mango.jpg`,
+                    title: `자연그대로 망고칩`,
+                    desc: `단맛이 그대로 살아있는 망고칩입니다.`,
+                    price: `2,500원`
+                },
+                {
+                    img: `images/apple.jpg`,
+                    title: `천연 오가닉 사과칩`,
+                    desc: `깨끗한 재료를 엄선하여 자연을 그대로 담았습니다.`,
+                    price: `2,000원`
+                },
+                {
+                    img: `images/jujube.jpg`,
+                    title: `아이깨끗 대추칩`,
+                    desc: `새콤함이 살아있는 반건조 대추그대로.`,
+                    price: `3,000원`
+                }
+            ],
+        }
+    },
+        components: {productList}, //componet 여래개 등록 가능,    
+        //왼쪽과 오른쪽 같으면 생략 가능(key와 변수명이 같을때 {product-list: productList} = {productList})
+        computed: {
+            totalPrice() {
+                let result = 0
+                this,inCart.ForEach(itme => {
+                    result += itme.price
+                })
+                return result
+            }
+        },
+        methods: {
+            addCart(index) {
+                this.inCart.push(this.chips[index])
+            },
+            delCart(index) {
+                this.inCart.splice(index, 1)
+            }
+        }
+    })
+    app.mount('#app');
+    </script>
+</body>
+</html>
